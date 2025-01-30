@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trombinoscope</title>
+    
+    <style>
+        /* Styles généraux */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            text-align: center;
+            color: #3498db; /* Couleur bleue */
+            margin-top: 50px;
+            font-size: 2.5em;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn-container a {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            margin: 0 15px;
+        }
+
+        .btn-container a:hover {
+            background-color: #2980b9; /* Couleur plus foncée au survol */
+        }
+
+        /* Grid pour le trombinoscope */
+        .trombinoscope-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px auto;
+            max-width: 1200px;
+            padding: 0 20px;
+        }
+
+        /* Carte de chaque personne */
+        .person-card {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 2px solid #3498db;
+            overflow: hidden; /* Assure que l'image ne déborde pas */
+        }
+
+        .person-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.2);
+        }
+
+        /* Image de la personne */
+        .person-card img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-bottom: 15px;
+            border: 3px solid #3498db;
+            transition: transform 0.3s ease;
+        }
+
+        .person-card img:hover {
+            transform: scale(1.1); /* Zoom léger au survol */
+        }
+
+        /* Texte de la personne */
+        .person-card p {
+            color: #333;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+
+        /* Liens de la personne */
+        .person-card a {
+            color: #3498db;
+            font-weight: bold;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .person-card a:hover {
+            color: #2980b9;
+        }
+
+        /* Ajouter des styles pour les petits écrans */
+        @media (max-width: 768px) {
+            .trombinoscope-container {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                padding: 0;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .btn-container a {
+                font-size: 0.9em;
+                margin: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>TROMBINOSCOPE</h1>
+    <div class="btn-container">
+        <a href="{% url 'formulaire' %}" class="btn">CONNEXION</a>
+        <a href="{% url 'register' %}" class="btn">INSCRIPTION</a>
+    </div>
+    
+    <div class="trombinoscope-container">
+        {% for item in data %}
+        <div class="person-card">
+            <!-- Photo de la personne -->
+            {% if item.personne.photo %}
+                <a href="{% if item.premier_cv %}{% url 'cv_detail' item.premier_cv.id %}{% else %}#{% endif %}">
+                    <img src="{{ item.personne.photo.url }}" alt="Photo de {{ item.personne.prenom }} {{ item.personne.nom }}">
+                </a>
+            {% else %}
+                <p>Aucune photo</p>
+            {% endif %}
+            <!-- Nom de la personne -->
+            <p>{{ item.personne.prenom }} <br>{{ item.personne.nom }}</p>
+            <!-- Lien vers le CV -->
+            {% if item.premier_cv %}
+                <a href="{% url 'cv_detail' item.premier_cv.id %}">Voir le CV</a>
+            {% else %}
+                <p>Aucun CV disponible</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
